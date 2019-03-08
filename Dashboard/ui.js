@@ -10,13 +10,13 @@ var field, robot;
 // Initialize PixiJS with transparent background
 var app = new PIXI.Application(window.innerWidth, window.innerHeight, { transparent: true, autoResize: true });
 document.body.appendChild(app.view); // Append it to the view
-loader.add(["images/field.png", "images/robot.jpg"]).load(setup); // Load images
+loader.add(["images/field.png", "images/robot.png"]).load(setup); // Load images
 
 // Runs once images are loaded
 function setup() {
     // Initialize my sprites to images
     field = new Sprite(resources["images/field.png"].texture);
-    robot = new Sprite(resources["images/robot.jpg"].texture);
+    robot = new Sprite(resources["images/robot.png"].texture);
 
     // Set the dimensions of the field
     field.width = 296;
@@ -40,71 +40,42 @@ function setup() {
     app.stage.addChild(field);
     app.stage.addChild(robot);
 
-    //Capture the keyboard arrow keys and "a" and "d" keys
-    let left = keyboard("ArrowLeft"),
-        up = keyboard("ArrowUp"),
-        right = keyboard("ArrowRight"),
+    /* START KEYBOARD CONTROLS FOR MOVEMENT TESTING */
+
+    //Capture the keyboard arrow keys
+    let up = keyboard("ArrowUp"),
         down = keyboard("ArrowDown"),
-        turnLeft = keyboard("a"),
-        turnRight = keyboard("d");
-
+        turnLeft = keyboard("ArrowLeft"),
+        turnRight = keyboard("ArrowRight");
     let speed = 1.5; // The speed 
-
-    // Move left on keypress
-    left.press = () => {
-        robot.vx = -speed;
-        robot.vy = 0;
-    };
-
-    // Stop moving left on keyrelease
-    left.release = () => {
-        if (!right.isDown && robot.vy === 0) {
-            robot.vx = 0;
-        }
-    };
 
     // Move up on keypress
     up.press = () => {
-        robot.vy = -speed;
-        robot.vx = 0;
+        robot.vy = speed;
     };
 
     // Stop moving up on keyrelease
     up.release = () => {
-        if (!down.isDown && robot.vx === 0) {
+        if (!down.isDown) {
             robot.vy = 0;
-        }
-    };
-
-    // Move right on keypress
-    right.press = () => {
-        robot.vx = speed;
-        robot.vy = 0;
-    };
-
-    // Stop moving right on keyrelease
-    right.release = () => {
-        if (!left.isDown && robot.vy === 0) {
-            robot.vx = 0;
         }
     };
 
     // Move down on keypress
     down.press = () => {
-        robot.vy = speed;
-        robot.vx = 0;
+        robot.vy = -speed;
     };
 
     // Stop moving down on keyrelease
     down.release = () => {
-        if (!up.isDown && robot.vx === 0) {
+        if (!up.isDown) {
             robot.vy = 0;
         }
     };
 
     // Turn left on keypress
     turnLeft.press = () => {
-        robot.rotateSpeed = speed / 15;
+        robot.rotateSpeed = -speed / 20;
     };
 
     // Stop turning left on keyrelease
@@ -116,7 +87,7 @@ function setup() {
 
     // Turn right on keypress
     turnRight.press = () => {
-        robot.rotateSpeed = -speed / 15;
+        robot.rotateSpeed = speed / 20;
     };
 
     // Stop turning right on keyrelease
@@ -126,11 +97,19 @@ function setup() {
         }
     };
 
+    /* END KEYBOARD CONTROLS FOR MOVEMENT TESTING */
+
     // Loop the gameLoop
     app.ticker.add(delta => gameLoop(delta));
 }
 
 function gameLoop(delta) {
+
+    /* START KEYBOARD CONTROLS FOR MOVEMENT TESTING */
+    //robot.rotation += robot.rotateSpeed;
+    //robot.x += robot.vy * Math.sin(-robot.rotation);
+    //robot.y += robot.vy * Math.cos(-robot.rotation);
+    /* END KEYBOARD CONTROLS FOR MOVEMENT TESTING */
 
     // Collider for right side
     if (robot.x + (robot.width / 2) > field.width) {
@@ -178,7 +157,7 @@ window.addEventListener("resize", function () {
     app.renderer.resize(window.innerWidth, window.innerHeight);
 });
 
-// This istens for key presses and releases
+// This listens for key presses and releases
 function keyboard(value) {
     let key = {};
     key.value = value;
